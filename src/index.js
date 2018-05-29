@@ -1,7 +1,31 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+//in command line run the following
+//npm install --save react-router-dom
+//then import router, route and link
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { isNullOrUndefined, isNull } from 'util';
+
+//lets make instruction and quotes components
+function Instructions(){
+    return (
+        <div>
+            <h2>How To Play</h2>
+            <p>Starting with X, each player takes a turn to play a square.</p>
+            <p>The first player to get 3 in a row horizontally, vertically or diagonally wins.</p>
+        </div>
+    );
+}
+
+function Credits(){
+    return (
+        <div>
+            <h2>Credits</h2>
+            <p>Thanks to the React Project and React Router 4!</p>
+        </div>
+    );
+}
 
 function Square(props) {
     return (
@@ -136,14 +160,25 @@ class Board extends React.Component {
                 status = 'Next player: ' + (this.state.xIsNext ? 'X':'O');
             }
 
-            return (
+            return ( 
                 <div className="game">
+                    {/*lets ad a nav here*/}
+                    <nav>
+                        <ul>
+                            <li><Link to="/">Game</Link></li>
+                            <li><Link to="/instructions">Instructions</Link></li>
+                            <li><Link to="/credits">Credits</Link></li>
+                        </ul>
+                    </nav>
                     <div className="game-board">
-                        <Board 
-                            squares={current.squares}
-                            onClick={(i)=> this.handleClick(i)}
+                        {/*now we have 3 different routes here instead of 1!*/}
+                        <Route path='/instructions' render={Instructions} />
+                        <Route path='/credits' render={Credits} />
+                        <Route
+                            exact
+                            path='/'
+                            render={(props) => <Board {...props} squares={current.squares} onClick={(i)=> this.handleClick(i)} />}
                         />
-
                     </div>
                     <div className="game-info">
                         <div>{status}</div>
@@ -157,7 +192,7 @@ class Board extends React.Component {
   // ========================================
   
 ReactDOM.render(
-    <Game />,
+    <Router><Game /></Router>,
     document.getElementById('root')
 );
 
